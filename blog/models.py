@@ -13,10 +13,9 @@ class Post(models.Model):
         choices=CATEGORIES,
         default='other',
     )
-    file = models.FileField(upload_to='uploads/', null=True, blank=True)
+    file = models.FileField(upload_to='/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
 
     def __str__(self):
         return self.title
