@@ -52,7 +52,7 @@ class RegisterAPIView(APIView):
         user = User.objects.create_user(username=username, password=password)
         token = Token.objects.create(user=user)
         return Response({"token": token.key})
-    @api_view(['GET'])
-    @permission_classes([IsAuthenticated])
-    def check_login(request):
-        return Response({"username": request.user.username})
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_login(request):
+    return Response({"username": request.user.username})
