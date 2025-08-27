@@ -10,6 +10,9 @@ from rest_framework.authtoken.models import Token
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import LoginSerializer
 from django.contrib.auth.models import User
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
@@ -49,3 +52,7 @@ class RegisterAPIView(APIView):
         user = User.objects.create_user(username=username, password=password)
         token = Token.objects.create(user=user)
         return Response({"token": token.key})
+    @api_view(['GET'])
+    @permission_classes([IsAuthenticated])
+    def check_login(request):
+        return Response({"username": request.user.username})
