@@ -1,3 +1,4 @@
+from urllib import request
 from rest_framework import viewsets
 from .models import Post
 from .serializers import PostSerializer
@@ -13,5 +14,6 @@ class PostViewSet(viewsets.ModelViewSet):
         return {'request': self.request}
 
     def create(self, request, *args, **kwargs):
-        print(request.FILES)  # debug line to see uploaded files
+        print("FILES:", request.FILES)  # should show your uploaded file
+        print("DATA:", request.data)     # form data
         return super().create(request, *args, **kwargs)
