@@ -8,6 +8,10 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     parser_classes = (MultiPartParser, FormParser)
 
+    # Pass the request to the serializer context so build_absolute_uri works
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     def create(self, request, *args, **kwargs):
-        print(request.FILES)  # Debug line
+        print(request.FILES)  # debug line to see uploaded files
         return super().create(request, *args, **kwargs)
