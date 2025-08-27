@@ -10,8 +10,9 @@ from rest_framework.authtoken.models import Token
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import LoginSerializer
 from django.contrib.auth.models import User
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -53,6 +54,7 @@ class RegisterAPIView(APIView):
         token = Token.objects.create(user=user)
         return Response({"token": token.key})
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def check_login(request):
     return Response({"username": request.user.username})
