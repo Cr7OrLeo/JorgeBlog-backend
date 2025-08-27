@@ -2,7 +2,14 @@ from urllib import request
 from rest_framework import viewsets
 from .models import Post
 from .serializers import PostSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 from rest_framework.parsers import MultiPartParser, FormParser
+from .serializers import LoginSerializer
+from django.contrib.auth.models import User
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
@@ -17,3 +24,28 @@ class PostViewSet(viewsets.ModelViewSet):
         print("FILES:", request.FILES)  # should show your uploaded file
         print("DATA:", request.data)     # form data
         return super().create(request, *args, **kwargs)
+
+class LoginAPIView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        username = serializer.validated_data.get("username")
+        password = serializer.validated_data.get("password")
+        user = authenticate(username=username, password=password)
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key})
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+class RegisterAPIView(APIView):
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        if User.objects.filter(username=username).exists():
+            return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.create_user(username=username, password=password)
+        token = Token.objects.create(user=user)
+        return Response({"token": token.key})
