@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Post(models.Model):
     CATEGORIES = [
@@ -21,9 +22,10 @@ class Post(models.Model):
         return self.title
 
 class Profile(models.Model):
-    user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
-    verification_code = models.CharField(max_length=6, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_verified = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True)
+
 
     def __str__(self):
         return self.user.username
