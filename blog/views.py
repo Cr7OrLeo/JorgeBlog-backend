@@ -72,11 +72,11 @@ class RegisterAPIView(APIView):
 
 @api_view(['POST'])
 def verify_email(request):
-    username = request.data.get("username")
+    token = request.data.get("token")
     code = request.data.get("code")
 
     try:
-        user = User.objects.get(username=username)
+        user = User.objects.get(token=token)
     except User.DoesNotExist:
         return Response({"error": "User does not exist"}, status=status.HTTP_400_BAD_REQUEST)
     
