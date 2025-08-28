@@ -84,6 +84,8 @@ def verify_email(request):
         user.profile.is_verified = True
         user.profile.verification_code = ""
         user.profile.save()
+
+        token, _ = Token.objects.get_or_create(user=user)
         return Response({"message": "Email verified successfully"})
     else:
         return Response({"error": "Invalid verification code"}, status=status.HTTP_400_BAD_REQUEST)
